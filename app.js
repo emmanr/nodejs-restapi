@@ -1,4 +1,13 @@
-const express = require('express');
-const app = express();
+const express = require('express'),
+app = express();
 
-app.listen(3000)
+// setting .env - https://www.npmjs.com/package/dotenv
+require('dotenv').config();
+
+const feedRoutes = require('./routes/feed');
+
+const PORT = process.env.PORT || 3000;
+
+app.use('/feed', feedRoutes);
+
+app.listen(PORT)
