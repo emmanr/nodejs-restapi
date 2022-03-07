@@ -1,5 +1,8 @@
 const { validationResult } = require('express-validator');
 
+// Model
+const Post = require('../models/post');
+
 exports.getPosts = async (req, res, next) => {
   try {
     res.status(200).json({
@@ -24,7 +27,6 @@ exports.createPost = async (req, res, next) => {
     const { title, content } = req.body;
 
     const errors = validationResult(req);
-
     if(!errors.isEmpty()) {
       return res.status(422).json({
         message: "Validation failed! Incorrect data inputted!",
@@ -32,20 +34,17 @@ exports.createPost = async (req, res, next) => {
       });
     }
 
-    // creating post in DB
-    res.status(201).json({ // 201 status is success we created a resource, 200 is just success
-      message: "Post message created successfully!",
-      post: {
-        _id: new Date().toISOString(),
-        title: title,
-        content: content,
-        creator: {
-          name: "Emman Ruaza"
-        },
-        createdAt: new Date()
-      }
+    const post = new Post({
+      title: title,
+      content: content,
+      imageUrl: "images/duck.jpg",
+      creator: { name: "Emman Ruaza" }
     });
+
+    const result = await post.save();
+    if (!result) throw new Error("Can't save post.");
+    res.status(201).json({ message: "Post message created successfully!", post: result});
   } catch (e) {
-    console.error("Something is wrong in creating Post.");
+    console.error(e);
   }
 }
