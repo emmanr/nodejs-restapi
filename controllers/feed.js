@@ -1,6 +1,15 @@
 exports.getPosts = (req, res, next) => {
   res.status(200).json({
-    posts: [{title: "I'm a big man!", content: "Lorem ipsum dolor sit amet!"}, {title: "Little Red Riding Hood", content: "In the far away land, a big bad wolf is looking for a food!"}]
+    posts: [{
+      _id: "2",
+      title: "The Duck!",
+      content: "Lorem ipsum dolor sit amet!",
+      imageUrl: "images/duck.jpg",
+      creator: {
+        name: "Emman"
+      },
+      createdAt: new Date()
+    }]
   });
 }
 
@@ -11,9 +20,13 @@ exports.createPost = async (req, res, next) => {
     res.status(201).json({ // 201 status is success we created a resource, 200 is just success
       message: "Post message created successfully!",
       post: {
-        id: new Date().toISOString(),
+        _id: new Date().toISOString(),
         title: title,
-        content: content
+        content: content,
+        creator: {
+          name: "Emman Ruaza"
+        },
+        createdAt: new Date()
       }
     });
   } catch (e) {

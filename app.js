@@ -12,7 +12,7 @@ require('dotenv').config();
 // routes
 const feedRoutes = require('./routes/feed');
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
 
 // we will note using urlEncoded => will parse data in format of x-www-for-urlencoded, this is the default data has if submitted through a <form> post request
 // app.use(bodyParser.urlEncoded());
