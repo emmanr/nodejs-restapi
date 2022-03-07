@@ -19,6 +19,6 @@ const postSchema = new Schema({
     type: Object,
     required: true
   }
-}, { timestamp: true }); // by adding timestamp mongoose will create a column createdAt, updatedAt timestamp
+}, { timestamps: true }); // by adding "timestamps" mongoose will create a column createdAt, updatedAt timestamp
 
 module.exports = mongoose.model('Post', postSchema);
