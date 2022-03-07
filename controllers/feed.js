@@ -28,10 +28,10 @@ exports.createPost = async (req, res, next) => {
 
     const errors = validationResult(req);
     if(!errors.isEmpty()) {
-      return res.status(422).json({
-        message: "Validation failed! Incorrect data inputted!",
-        errors: errors.array()
-      });
+      const error = new Error("Validation failed! Entered data is incorrect!");
+      error.statusCode = 422;
+      throw error; // although we are inside async, we are not using await here
+      // if we use next(), this will continue and save the data even if we have a validation error
     }
 
     const post = new Post({
@@ -44,7 +44,8 @@ exports.createPost = async (req, res, next) => {
     const result = await post.save();
     if (!result) throw new Error("Can't save post.");
     res.status(201).json({ message: "Post message created successfully!", post: result});
-  } catch (e) {
-    console.error(e);
+  } catch (err) {
+    if (!err.statusCode) err.statusCode = 500;
+    next(err); // we add next instead of throwing because we are in async request
   }
 }

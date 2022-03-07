@@ -1,10 +1,13 @@
+const path = require('path');
 // setting up express and create an instance of it
 const express = require('express'), app = express();
 
+// modules
 const bodyParser = require('body-parser');
 
 // middleware paths
 const cors = require('./middleware/cors');
+const errorHandler = require('./middleware/error-handler');
 
 // setting .env - https://www.npmjs.com/package/dotenv
 require('dotenv').config();
@@ -15,18 +18,18 @@ const { connection } = require('./connection');
 // routes
 const feedRoutes = require('./routes/feed');
 
-
 const PORT = process.env.PORT || 8080;
 
-// we will note using urlEncoded => will parse data in format of x-www-for-urlencoded, this is the default data has if submitted through a <form> post request
-// app.use(bodyParser.urlEncoded());
-// instead we use bodyParser with the json() method
+// will not use urlEncoded => this parse data in format of x-www-for-urlencoded, this is the default data if submitted through a <form> post request - app.use(bodyParser.urlEncoded());
+// instead will use bodyParser with json() method
 app.use(bodyParser.json()); // will parse json data from incoming request or in format of application/json
+app.use('/post-images', express.static(path.join(__dirname, 'images'))); // the path in our root folder with /images(__dirname, 'images') will be serve staticly for request going to "/post-images"
 
 app.use(cors);
 
-// using routes
+// routes
 app.use('/feed', feedRoutes);
 
+app.use(errorHandler);
 connection(process.env.DB_CONNECT);
 app.listen(PORT)
