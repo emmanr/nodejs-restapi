@@ -9,8 +9,12 @@ const cors = require('./middleware/cors');
 // setting .env - https://www.npmjs.com/package/dotenv
 require('dotenv').config();
 
+// database connection
+const { connection } = require('./connection');
+
 // routes
 const feedRoutes = require('./routes/feed');
+
 
 const PORT = process.env.PORT || 8080;
 
@@ -24,4 +28,5 @@ app.use(cors);
 // using routes
 app.use('/feed', feedRoutes);
 
+connection(process.env.DB_CONNECT);
 app.listen(PORT)
