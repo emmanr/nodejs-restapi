@@ -1,5 +1,5 @@
 // helpers
-const errorCatcher = require('../helpers/error-handler/error-catcher');
+const { errorCatcher, throwError } = require('../helpers/error-handler/error-catcher');
 const validationError = require('../helpers/error-handler/validation-handler');
 
 // Model
@@ -26,6 +26,7 @@ exports.getPost = async (req, res, next) => {
   try {
     const post = await Post.findById(postId);
 
+    if (!post) throwError(404, "Could not find post.");
 
   } catch (err) {
     errorCatcher(err, next);

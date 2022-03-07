@@ -1,11 +1,10 @@
 const { validationResult } = require('express-validator');
+const { throwError } = require('./error-catcher');
 
 const validationError = (req, msg) => {
   const errors = validationResult(req);
   if(!errors.isEmpty()) {
-    const error = new Error(msg);
-    error.statusCode = 422;
-    throw error;
+    throwError(422, msg);
   }
 }
 
