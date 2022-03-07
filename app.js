@@ -31,5 +31,6 @@ app.use(cors);
 app.use('/feed', feedRoutes);
 
 app.use(errorHandler);
+
 connection(process.env.DB_CONNECT);
 app.listen(PORT)
