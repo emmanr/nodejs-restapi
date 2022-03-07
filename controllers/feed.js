@@ -5,19 +5,13 @@ const validationError = require('../helpers/error-handler/validation-handler');
 // Model
 const Post = require('../models/post');
 
-exports.getPosts = (req, res, next) => {
-  res.status(200).json({
-    posts: [{
-      _id: "2",
-      title: "The Duck!",
-      content: "Lorem ipsum dolor sit amet!",
-      imageUrl: "images/duck.jpg",
-      creator: {
-        name: "Emman"
-      },
-      createdAt: new Date()
-    }]
-  });
+exports.getPosts = async (req, res, next) => {
+  try {
+    const posts = await Post.find();
+    res.status(200).json({ message: "Fetched posts successfully.", posts: posts });
+  } catch (err) {
+    errorCatcher(err, next);
+  }
 }
 
 exports.getPost = async (req, res, next) => {
@@ -25,9 +19,8 @@ exports.getPost = async (req, res, next) => {
 
   try {
     const post = await Post.findById(postId);
-
     if (!post) throwError(404, "Could not find post.");
-
+    res.status(200).json({ message: "Post fetched.", post: post });
   } catch (err) {
     errorCatcher(err, next);
   }
@@ -42,7 +35,7 @@ exports.createPost = async (req, res, next) => {
     const post = new Post({
       title: title,
       content: content,
-      imageUrl: "images/duck.jpg",
+      imageUrl: "post-images/duck.jpg",
       creator: { name: "Emman Ruaza" }
     });
 
