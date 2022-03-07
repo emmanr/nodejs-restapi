@@ -27,15 +27,17 @@ exports.getPost = async (req, res, next) => {
 }
 
 exports.createPost = async (req, res, next) => {
-  try {
-    const { title, content } = req.body;
 
+  try {
     validationError(req, "Validation failed! Entered data is incorrect!");
 
+    if (!req.file) throwError(422, "Error image file upload.");
+    const imageUrl = req.file.path;
+    const { title, content } = req.body;
     const post = new Post({
       title: title,
       content: content,
-      imageUrl: "post-images/duck.jpg",
+      imageUrl: imageUrl,
       creator: { name: "Emman Ruaza" }
     });
 
