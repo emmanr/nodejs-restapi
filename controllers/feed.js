@@ -8,8 +8,12 @@ const { deleteFile } = require('../helpers/delete-image');
 
 exports.getPosts = async (req, res, next) => {
   try {
-    const posts = await Post.find();
-    res.status(200).json({ message: "Fetched posts successfully.", posts: posts });
+    const currentPage = req.query.page || 1;
+    const perPage = 2;
+    const totalItems = await Post.find().countDocuments();
+    const posts = await Post.find().skip((currentPage - 1) * perPage).limit(perPage);
+
+    res.status(200).json({ message: "Fetched posts successfully.", posts: posts, totalItems: totalItems });
   } catch (err) {
     errorCatcher(err, next);
   }
@@ -86,7 +90,7 @@ exports.deletePost = async (req, res, next) => {
     // check login user
     deleteFile(`../${post.imageUrl}`)
     await Post.findByIdAndRemove(postId);
-    res.status(200).json({ message: "Deleted post!" }); 
+    res.status(200).json({ message: "Deleted post!" });
   } catch (err) {
     errorCatcher(err, next);
   }
