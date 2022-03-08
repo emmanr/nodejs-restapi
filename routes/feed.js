@@ -5,7 +5,7 @@ const router = express.Router();
 const feedController = require('../controllers/feed');
 
 // Middleware
-const validation = require('../middleware/form-validation');
+const validation = require('../helpers/validation/form-validation');
 
 // GET /feed/posts
 router.get('/posts', feedController.getPosts);
