@@ -1,4 +1,4 @@
-const cors = (req, res, next) => {
+module.exports = (req, res, next) => {
   // middleware to disable CORS in browser, this is most commonly use for sharing API(data) to different server or host
   // res.setHeader('Access-Control-Allow-Origin', 'www.facebook.com'); we can lock on where site we will share our data, but if we want to share it to all will use *(wildcard)
   // if has multiple domains, we can separate it with commans ('Access-Cont...', 'mydomain.com, domain2.com, sparkledomain.com')
@@ -8,8 +8,6 @@ const cors = (req, res, next) => {
   // Authorization - for authorizing user in our client to what to access, and for the client to set content-type (note client means browser or any server);
   next();
 };
-
-module.exports = cors;
 
 // to setup fetching data with some header:
 // button.addEventListener('click', async () => {
