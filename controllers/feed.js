@@ -50,10 +50,11 @@ exports.createPost = async (req, res, next) => {
 }
 
 exports.updatePost = async (req, res, next) => {
+  const postId = req.params.postId;
+
   try {
     validationError(req, "Validation failed! Entered data is incorrect!");
 
-    const postId = req.params.postId;
     const { title, content } = req.body;
     let imageUrl = req.body.image;
 
@@ -70,6 +71,22 @@ exports.updatePost = async (req, res, next) => {
     post.imageUrl = imageUrl;
     await post.save();
     res.status(200).json({ message: "Post updated successfully!", post: post});
+  } catch (err) {
+    errorCatcher(err, next);
+  }
+}
+
+exports.deletePost = async (req, res, next) => {
+  const postId = req.params.postId;
+
+  try {
+    const post = await Post.findById(postId);
+    if (!post) throwError(404, "Could not find post.");
+
+    // check login user
+    deleteFile(`../${post.imageUrl}`)
+    await Post.findByIdAndRemove(postId);
+    res.status(200).json({ message: "Deleted post!" }); 
   } catch (err) {
     errorCatcher(err, next);
   }
