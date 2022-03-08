@@ -14,4 +14,7 @@ router.get('/post/:postId', feedController.getPost);
 // POST /feed/post
 router.post('/post', validation.title, validation.content, feedController.createPost);
 
+// PUT
+router.put('/post/:postId', validation.title, validation.content, feedController.updatePost);
+
 module.exports = router;

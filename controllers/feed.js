@@ -1,9 +1,10 @@
+// Model
+const Post = require('../models/post');
+
 // helpers
 const { errorCatcher, throwError } = require('../helpers/error-handler/error-catcher');
 const validationError = require('../helpers/error-handler/validation-handler');
-
-// Model
-const Post = require('../models/post');
+const { deleteFile } = require('../helpers/delete-image');
 
 exports.getPosts = async (req, res, next) => {
   try {
@@ -27,7 +28,6 @@ exports.getPost = async (req, res, next) => {
 }
 
 exports.createPost = async (req, res, next) => {
-
   try {
     validationError(req, "Validation failed! Entered data is incorrect!");
 
@@ -44,6 +44,32 @@ exports.createPost = async (req, res, next) => {
     const result = await post.save();
     if (!result) throw new Error("Can't save post.");
     res.status(201).json({ message: "Post message created successfully!", post: result});
+  } catch (err) {
+    errorCatcher(err, next);
+  }
+}
+
+exports.updatePost = async (req, res, next) => {
+  try {
+    validationError(req, "Validation failed! Entered data is incorrect!");
+
+    const postId = req.params.postId;
+    const { title, content } = req.body;
+    let imageUrl = req.body.image;
+
+    if (req.file) imageUrl = req.file.path;
+    if (!imageUrl) throwError(422, "No file picked.");
+
+    const post = await Post.findById(postId);
+    if (!post) throwError(404, "Could not find post.");
+
+    if (imageUrl !== post.imageUrl) deleteFile(`../${post.imageUrl}`);
+
+    post.title = title;
+    post.content = content;
+    post.imageUrl = imageUrl;
+    await post.save();
+    res.status(200).json({ message: "Post updated successfully!", post: post});
   } catch (err) {
     errorCatcher(err, next);
   }
