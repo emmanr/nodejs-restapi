@@ -1,6 +1,7 @@
-exports.throwError = (status, msg) => {
+exports.throwError = (status, msg, data) => {
   const error = new Error(msg);
   error.statusCode = status;
+  if (data) error.data = data.array();
   throw error;
   // note that if we are inside async await, we should use next(error), but most cases, this will throw an error and try-"catch" will received it so it is okay
 };
