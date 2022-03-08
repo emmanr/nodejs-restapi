@@ -16,7 +16,7 @@ const multerHelper = require('./helpers/multer-helper');
 require('dotenv').config();
 
 // database connection
-const { connection } = require('./connection');
+const connection = require('./connection');
 
 // routes
 const feedRoutes = require('./routes/feed');
