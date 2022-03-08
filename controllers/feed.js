@@ -1,5 +1,6 @@
 // Model
 const Post = require('../models/post');
+const User = require('../models/user');
 
 // helpers
 const { errorCatcher, throwError } = require('../helpers/error-handler/error-catcher');
@@ -34,20 +35,29 @@ exports.getPost = async (req, res, next) => {
 exports.createPost = async (req, res, next) => {
   try {
     validationError(req, "Validation failed! Entered data is incorrect!");
-
     if (!req.file) throwError(422, "Error image file upload.");
     const imageUrl = req.file.path;
     const { title, content } = req.body;
+
     const post = new Post({
       title: title,
       content: content,
       imageUrl: imageUrl,
-      creator: { name: "Emman Ruaza" }
+      creator: req.userId
     });
 
+    // finding User and Saving the post ID to User
+    const user = await User.findById(req.userId);
+    if (!user) throw new Error("Can't save post. Something is wrong with the referenced User");
+    user.posts.push(post);
+    await user.save();
+
     const result = await post.save();
-    if (!result) throw new Error("Can't save post.");
-    res.status(201).json({ message: "Post message created successfully!", post: result});
+    if (!result) throw new Error("Problem saving post.");
+    res.status(201).json({
+      message: "Post created successfully!",
+      post: post
+    });
   } catch (err) {
     errorCatcher(err, next);
   }
@@ -87,7 +97,10 @@ exports.deletePost = async (req, res, next) => {
     const post = await Post.findById(postId);
     if (!post) throwError(404, "Could not find post.");
 
-    // check login user
+    const user = await User.findById(req.userId);
+    await user.posts.pull(postId); // this will removed the POST ID in User posts array
+    await user.save();
+
     deleteFile(`../${post.imageUrl}`)
     await Post.findByIdAndRemove(postId);
     res.status(200).json({ message: "Deleted post!" });
