@@ -26,3 +26,18 @@ exports.signup = async (req, res, next) => {
     errorCatcher(err, next);
   }
 }
+
+exports.login = async (req, res, next) => {
+  const { email, password } = req.body;
+
+  try {
+    const user = await User.findOne({email: email});
+    if (!user) throwError(401, "Login failed!");
+
+    const hashedPassword = await bcrypt.compare(password, user.password);
+    if (!hashedPassword) throwError(401, "Login failed!"); // if user passed check, but password comparing fails
+
+  } catch (err) {
+    errorCatcher(err, next);
+  }
+}
