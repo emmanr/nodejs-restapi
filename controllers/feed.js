@@ -12,7 +12,7 @@ exports.getPosts = async (req, res, next) => {
     const currentPage = req.query.page || 1;
     const perPage = 2;
     const totalItems = await Post.find().countDocuments();
-    const posts = await Post.find().skip((currentPage - 1) * perPage).limit(perPage);
+    const posts = await Post.find().populate('creator').skip((currentPage - 1) * perPage).limit(perPage);
 
     res.status(200).json({ message: "Fetched posts successfully.", posts: posts, totalItems: totalItems });
   } catch (err) {
@@ -24,7 +24,7 @@ exports.getPost = async (req, res, next) => {
   const postId = req.params.postId;
 
   try {
-    const post = await Post.findById(postId);
+    const post = await Post.findById(postId).populate('creator');
     if (!post) throwError(404, "Could not find post.");
     res.status(200).json({ message: "Post fetched.", post: post });
   } catch (err) {
