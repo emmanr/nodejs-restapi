@@ -8,5 +8,9 @@ exports.throwError = (status, msg, errorArray) => {
 
 exports.errorCatcher = (err, next) => {
   if (!err.statusCode) err.statusCode = 500;
-  next(err);
+  if (next) {
+    next(err);
+  } else {
+    throw err;
+  }
 };

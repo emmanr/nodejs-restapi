@@ -1,6 +1,9 @@
 const User = require('../models/user');
 
+// modules
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
 // helpers
 const { errorCatcher, throwError } = require('../helpers/error-handler/error-catcher');
@@ -37,6 +40,12 @@ exports.login = async (req, res, next) => {
     const hashedPassword = await bcrypt.compare(password, user.password);
     if (!hashedPassword) throwError(401, "Login failed!"); // if user passed check, but password comparing fails
 
+    const token = await jwt.sign({
+      email: user.email,
+      userId: user._id.toString()
+    }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+    return res.status(200).json({token: token, userId: user._id.toString()});
   } catch (err) {
     errorCatcher(err, next);
   }
