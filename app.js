@@ -20,6 +20,7 @@ const connection = require('./connection');
 
 // routes
 const feedRoutes = require('./routes/feed');
+const authRoutes = require('./routes/auth');
 
 const PORT = process.env.PORT || 8080;
 
@@ -32,6 +33,7 @@ app.use(cors);
 
 // routes
 app.use('/feed', feedRoutes);
+app.use('/auth', authRoutes);
 
 app.use(errorHandler);
 
