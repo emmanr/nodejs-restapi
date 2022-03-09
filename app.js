@@ -6,6 +6,7 @@ const express = require('express'), app = express();
 const bodyParser = require('body-parser');
 const helmet = require('helmet');
 const compression = require('compression');
+const morgan = require('morgan');
 
 // custom middlewares
 const cors = require('./middleware/cors');
@@ -21,8 +22,9 @@ const server = require('./server/server');
 const feedRoutes = require('./routes/feed');
 const authRoutes = require('./routes/auth');
 
-app.use(helmet());
-app.use(compression());
+app.use(helmet()); // For setting secure response headers
+app.use(compression()); // Compressing assets (css and js) Note: that we may not need this if our host has a built-in compression
+app.use(morgan('combined')); // to log more details in our consoles (browser type, methods, host ...)
 
 // will not use urlEncoded => this parse data in format of x-www-for-urlencoded, this is the default data if submitted through a <form> post request - app.use(bodyParser.urlEncoded());
 // instead will use bodyParser with json() method
