@@ -14,7 +14,7 @@ exports.getPosts = async (req, res, next) => {
     const currentPage = req.query.page || 1;
     const perPage = 2;
     const totalItems = await Post.find().countDocuments();
-    const posts = await Post.find().populate('creator').skip((currentPage - 1) * perPage).limit(perPage);
+    const posts = await Post.find().populate('creator').sort({createdAt: -1}).skip((currentPage - 1) * perPage).limit(perPage);
 
     res.status(200).json({ message: "Fetched posts successfully.", posts: posts, totalItems: totalItems });
   } catch (err) {
@@ -92,6 +92,13 @@ exports.updatePost = async (req, res, next) => {
     post.content = content;
     post.imageUrl = imageUrl;
     await post.save();
+
+    // setting up socket io
+    wsocket.getWSocket().emit('posts', {
+      action: 'update',
+      post: post
+    });
+
     res.status(200).json({ message: "Post updated successfully!", post: post});
   } catch (err) {
     errorCatcher(err, next);
