@@ -4,8 +4,9 @@ const express = require('express'), app = express();
 
 // modules
 const bodyParser = require('body-parser');
+const helmet = require('helmet');
 
-// middlewares
+// custom middlewares
 const cors = require('./middleware/cors');
 const errorHandler = require('./middleware/error-handler');
 
@@ -18,6 +19,8 @@ const server = require('./server/server');
 // routes
 const feedRoutes = require('./routes/feed');
 const authRoutes = require('./routes/auth');
+
+app.use(helmet());
 
 // will not use urlEncoded => this parse data in format of x-www-for-urlencoded, this is the default data if submitted through a <form> post request - app.use(bodyParser.urlEncoded());
 // instead will use bodyParser with json() method
