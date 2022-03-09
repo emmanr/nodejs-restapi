@@ -3,7 +3,6 @@ const User = require('../models/user');
 // modules
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-require('dotenv').config();
 
 // helpers
 const { errorCatcher, throwError } = require('../helpers/error-handler/error-catcher');

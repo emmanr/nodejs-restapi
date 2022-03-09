@@ -4,8 +4,6 @@ const express = require('express'), app = express();
 
 // modules
 const bodyParser = require('body-parser');
-// setting .env(process.env.VAR_NAME) - https://www.npmjs.com/package/dotenv
-require('dotenv').config();
 
 // middlewares
 const cors = require('./middleware/cors');
@@ -37,5 +35,5 @@ app.use('/auth', authRoutes);
 
 app.use(errorHandler);
 
-db_connect(process.env.DB_CONNECT);
+db_connect();
 server(app);

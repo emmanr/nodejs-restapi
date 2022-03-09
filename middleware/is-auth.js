@@ -1,6 +1,4 @@
 const jwt = require('jsonwebtoken');
-require('dotenv').config();
-
 const { errorCatcher, throwError } = require('../helpers/error-handler/error-catcher');
 
 module.exports = async (req, res, next) => {
