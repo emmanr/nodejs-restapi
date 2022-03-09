@@ -14,7 +14,8 @@ const errorHandler = require('./middleware/error-handler');
 // helpers
 const multerHelper = require('./helpers/multer-helper');
 const db_connect = require('./helpers/db_connect');
-const server = require('./helpers/server');
+
+const server = require('./server/server');
 
 // routes
 const feedRoutes = require('./routes/feed');
