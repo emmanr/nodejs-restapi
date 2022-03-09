@@ -7,6 +7,8 @@ const { errorCatcher, throwError } = require('../helpers/error-handler/error-cat
 const validationError = require('../helpers/error-handler/validation-handler');
 const { deleteFile } = require('../helpers/delete-image');
 
+const wsocket = require('../server/socket');
+
 exports.getPosts = async (req, res, next) => {
   try {
     const currentPage = req.query.page || 1;
@@ -49,11 +51,17 @@ exports.createPost = async (req, res, next) => {
     // finding User and Saving the post ID to User
     const user = await User.findById(req.userId);
     if (!user) throw new Error("Can't save post. Something is wrong with the referenced User");
+
     user.posts.push(post);
+    await post.save();
     await user.save();
 
-    const result = await post.save();
-    if (!result) throw new Error("Problem saving post.");
+    // setting up socket io
+    wsocket.getWSocket().emit('posts', {
+      action: 'create',
+      post: post
+    });
+
     res.status(201).json({
       message: "Post created successfully!",
       post: post
