@@ -3,6 +3,7 @@ const path = require('path');
 const express = require('express'), app = express();
 
 // modules
+const fs = require('fs');
 const bodyParser = require('body-parser');
 const helmet = require('helmet');
 const compression = require('compression');
@@ -22,9 +23,16 @@ const server = require('./server/server');
 const feedRoutes = require('./routes/feed');
 const authRoutes = require('./routes/auth');
 
+const accessLogStream = fs.createWriteStream(
+  path.join(__dirname, 'access.log'),
+  { flags: 'a' } // new data will append
+);
+
 app.use(helmet()); // For setting secure response headers
 app.use(compression()); // Compressing assets (css and js) Note: that we may not need this if our host has a built-in compression
-app.use(morgan('combined')); // to log more details in our consoles (browser type, methods, host ...)
+app.use(morgan('combined', { stream: accessLogStream }));
+// it is best to just create a log file to display all the logs instead in the console
+// to log more details in our consoles (browser type, methods, host ...)
 
 // will not use urlEncoded => this parse data in format of x-www-for-urlencoded, this is the default data if submitted through a <form> post request - app.use(bodyParser.urlEncoded());
 // instead will use bodyParser with json() method
