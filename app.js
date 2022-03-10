@@ -21,11 +21,6 @@ const server = require('./server/server');
 const feedRoutes = require('./routes/feed');
 const authRoutes = require('./routes/auth');
 
-const accessLogStream = fs.createWriteStream(
-  path.join(__dirname, 'access.log'),
-  { flags: 'a' }
-);
-
 app.use(helmet());
 app.use(compression());
 app.use(bodyParser.json());
