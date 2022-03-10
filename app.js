@@ -29,7 +29,7 @@ const accessLogStream = fs.createWriteStream(
 
 app.use(helmet());
 app.use(compression());
-app.use(morgan('combined', { stream: accessLogStream }));
+// app.use(morgan('combined', { stream: accessLogStream })); will not use morgan for HEROKU
 app.use(bodyParser.json());
 app.use(multerHelper);
 app.use('/images', express.static(path.join(__dirname, 'images')));
