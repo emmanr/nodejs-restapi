@@ -1,19 +1,27 @@
 const jwt = require('jsonwebtoken');
 const { errorCatcher, throwError } = require('../helpers/error-handler/error-catcher');
 
-module.exports = async (req, res, next) => {
+module.exports = (req, res, next) => {
+    const authHeader = req.get('Authorization');
+    // if (!authHeader) throwError(401, 'Not authenticated!');
+    if (!authHeader) {
+      const error = new Error('Not authenticated!');
+      error.statusCode = 401;
+      throw error;
+    }
 
-  try {
-    const authHeader = await req.get('Authorization');
-    if (!authHeader) throwError(401, 'Not authenticated!');
     const token = authHeader.split(" ")[1]; // getting the header value from the client "Bearer ${this.props.token}"
-    const decodedToken = await jwt.verify(token, process.env.JWT_SECRET);
+    let decodedToken;
+    try {
+      decodedToken = jwt.verify(token, process.env.JWT_SECRET)
+    } catch (err) {
+      err.statusCode = 500;
+      throw err;
+    }
+
     if (!decodedToken) throwError(401, 'Not authenticated!');
     req.userId = decodedToken.userId;
     next();
-  } catch (err) {
-    errorCatcher(err, next);
-  }
 }
 
 // TO ADD THE TOKEN IN THE CLIENT SIDE:
