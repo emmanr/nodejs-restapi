@@ -6,7 +6,6 @@ const fs = require('fs');
 const bodyParser = require('body-parser');
 const helmet = require('helmet');
 const compression = require('compression');
-const morgan = require('morgan');
 
 // custom middlewares
 const cors = require('./middleware/cors');
@@ -29,7 +28,6 @@ const accessLogStream = fs.createWriteStream(
 
 app.use(helmet());
 app.use(compression());
-// app.use(morgan('combined', { stream: accessLogStream })); will not use morgan for HEROKU
 app.use(bodyParser.json());
 app.use(multerHelper);
 app.use('/images', express.static(path.join(__dirname, 'images')));
